@@ -1,0 +1,38 @@
+def forward_chaining():
+    # 1. Setup Data
+    rules = [
+        (['A', 'B'], 'C'), # R1: A & B -> C
+        (['C'], 'D'),      # R2: C -> D
+        (['A', 'E'], 'F')  # R3: A & E -> F
+    ]
+    facts = ['A', 'B']     # Initial facts
+    goal = 'D'             # What we want to find
+    path = []
+    
+    print(f"Initial Facts: {facts} | Goal: {goal}\n")
+    print("--- Trace ---")
+    
+    changed = True
+    while changed and goal not in facts:
+        changed = False
+        for i, (conditions, result) in enumerate(rules):
+            rule_id = i + 1
+            
+            # Check if all conditions of the rule are in our facts
+            if all(c in facts for c in conditions):
+                if result not in facts:
+                    facts.append(result)
+                    path.append(f"R{rule_id}")
+                    print(f"Apply R{rule_id}: {conditions} -> {result}. New facts: {facts}")
+                    changed = True
+                    break # Restart scan with new facts
+                
+    # 3. Results
+    print("\n--- Results ---")
+    if goal in facts:
+        print(f"Goal '{goal}' Achieved!")
+        print(f"Path: {' -> '.join(path)}")
+    else:
+        print("Goal not achieved.")
+
+forward_chaining()
